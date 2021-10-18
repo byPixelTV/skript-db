@@ -6,7 +6,6 @@ import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import com.btk5h.skriptdb.events.SQLQueryCompleteEvent;
 import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
 
 public class EvtSQLQueryComplete extends SkriptEvent {
     static {
@@ -24,7 +23,7 @@ public class EvtSQLQueryComplete extends SkriptEvent {
     }
 
     @Override
-    public String toString(@Nullable Event event, boolean debug) {
+    public String toString(Event event, boolean debug) {
         return "complete of sql query";
     }
 }
