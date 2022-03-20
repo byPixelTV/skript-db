@@ -10,7 +10,7 @@
 - Replaced `synchronously execute` with `quickly execute`, which allows to speed up queries by 50ms with some risk
 - SQL Driver is configurable
 - A few variable type related bugs fixed
-- Uses Java 11
+- Uses Java 11 instead of Java 8
 
 ### Installation
 1. Use Skript 2.5+
