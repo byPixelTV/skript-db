@@ -82,3 +82,10 @@ execute unsafe {fully dynamic query} in {sql}
 ```
 
 ---
+### Configuration
+plugins/skript-db/config.yml
+```
+# Only change this if you wish to use a different driver than Java's default, like MariaDB driver.
+# If you use MariaDB, its driver is shaded together with skript-db, so you can just specify: "org.mariadb.jdbc.Driver"
+sql-driver-class-name: "default"
+```
