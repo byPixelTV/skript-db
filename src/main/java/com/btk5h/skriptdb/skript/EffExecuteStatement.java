@@ -10,10 +10,14 @@ import com.btk5h.skriptdb.SkriptDB;
 import com.btk5h.skriptdb.SkriptUtil;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
@@ -299,6 +303,19 @@ public class EffExecuteStatement extends Effect {
     }
 
     private void setVariable(Event e, String name, Object obj) {
+
+        //fix mediumblob and similar column types, so they return a String correctly
+        if (obj.getClass().getName().equals("[B")) {
+            obj = new String((byte[]) obj);
+
+        //in some servers instead of being byte array, it appears as SerialBlob (depends on mc version, 1.12.2 is bvte array, 1.16.5 SerialBlob)
+        } else if (obj instanceof SerialBlob) {
+            try {
+                obj = new String(((SerialBlob) obj).getBinaryStream().readAllBytes());
+            } catch (IOException | SerialException ex) {
+                ex.printStackTrace();
+            }
+        }
         Variables.setVariable(name.toLowerCase(Locale.ENGLISH), obj, e, isLocal);
     }
 
