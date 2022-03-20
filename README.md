@@ -10,6 +10,10 @@
 - Only meant to be used by newer Minecraft versions (1.8 is not supported)
 - Replaced `synchronously execute` with `quickly execute`, which allows to speed up queries by 50ms with some risk
 
+### Installation
+1. Use Skript 2.5+
+2. Use Java 11+
+3. Put skript-db in plugins folder and restart the server
 ### Expression `Data Source` => `datasource`
 Stores the connection information for a data source. This should be saved to a variable in a
  `script load` event or manually through an effect command.
