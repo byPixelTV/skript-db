@@ -7,7 +7,7 @@
 - Fixed local variables disappearance in newer Skript versions (very hacky fix, but it works, so that's good!)
 - Thread-pool size is now automatically increasing on demand to use of CachedThreadPool, instead of a fixed hard-coded number
 - Uses a newer version of HikariCP
-- Only meant to be used by newer Minecraft versions (1.8 is not supported)
+- A few variable type related bugs fixed
 - Replaced `synchronously execute` with `quickly execute`, which allows to speed up queries by 50ms with some risk
 
 ### Installation
