@@ -305,15 +305,17 @@ public class EffExecuteStatement extends Effect {
     private void setVariable(Event e, String name, Object obj) {
 
         //fix mediumblob and similar column types, so they return a String correctly
-        if (obj.getClass().getName().equals("[B")) {
-            obj = new String((byte[]) obj);
+        if (obj != null) {
+            if (obj.getClass().getName().equals("[B")) {
+                obj = new String((byte[]) obj);
 
-        //in some servers instead of being byte array, it appears as SerialBlob (depends on mc version, 1.12.2 is bvte array, 1.16.5 SerialBlob)
-        } else if (obj instanceof SerialBlob) {
-            try {
-                obj = new String(((SerialBlob) obj).getBinaryStream().readAllBytes());
-            } catch (IOException | SerialException ex) {
-                ex.printStackTrace();
+                //in some servers instead of being byte array, it appears as SerialBlob (depends on mc version, 1.12.2 is bvte array, 1.16.5 SerialBlob)
+            } else if (obj instanceof SerialBlob) {
+                try {
+                    obj = new String(((SerialBlob) obj).getBinaryStream().readAllBytes());
+                } catch (IOException | SerialException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
         Variables.setVariable(name.toLowerCase(Locale.ENGLISH), obj, e, isLocal);
