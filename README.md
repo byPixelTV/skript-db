@@ -13,9 +13,10 @@
 - Uses Java 11 instead of Java 8
 
 ### Installation
-1. Use Skript 2.5+
-2. Use Java 11+
-3. Put skript-db in plugins folder and restart the server
+1. Use 1.8+ Minecraft server version.
+2. Use Skript 2.5+ (1.8 Skript fork is needed if you're using 1.8)
+3. Use Java 11+ (If you use 1.8, a spigot fork is needed to support Java 11+)
+4. Put skript-db in plugins folder and restart the server
 ### Expression `Data Source` => `datasource`
 Stores the connection information for a data source. This should be saved to a variable in a
  `script load` event or manually through an effect command.
