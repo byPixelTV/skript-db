@@ -56,7 +56,7 @@
                 <version>3.2.3</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
-          			<minimizeJar>true</minimizeJar>
+                    <minimizeJar>true</minimizeJar>
                 </configuration>
                 <executions>
                     <execution>
