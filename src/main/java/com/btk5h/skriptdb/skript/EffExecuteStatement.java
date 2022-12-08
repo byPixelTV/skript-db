@@ -44,8 +44,7 @@ import java.util.concurrent.Executors;
  * @since 0.1.0
  */
 public class EffExecuteStatement extends Effect {
-    private static final ExecutorService threadPool =
-            Executors.newCachedThreadPool();
+    private static final ExecutorService threadPool = Executors.newFixedThreadPool(SkriptDB.getInstance().getConfig().getInt("thread-pool-size", 10));
     static String lastError;
 
     static {
