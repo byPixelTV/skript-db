@@ -22,7 +22,8 @@
 Stores the connection information for a data source. This should be saved to a variable in a
  `script load` event or manually through an effect command.
 
- The url format for your database may vary! The example provided uses a MySQL database.
+ The url format for your database may vary depending on database you are using. 
+ MariaDB/PostgreSQL users: make sure to check `config.yml` to use the correct driver.
 #### Syntax
 ```
 [the] data(base|[ ]source) [(of|at)] %string%
@@ -31,6 +32,9 @@ Stores the connection information for a data source. This should be saved to a v
 #### Examples
 ```
 set {sql} to the database "mysql://localhost:3306/mydatabase?user=admin&password=12345&useSSL=false"
+set {sql} to the database "mariadb://localhost:3306/mydatabase?user=admin&password=12345&useSSL=false"
+set {sql} to the database "postgresql://localhost:3306/mydatabase?user=admin&password=12345&ssl=false"
+set {sql} to the database "sqlite:database.db"
 ```
 
 ---
