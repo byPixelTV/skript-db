@@ -77,10 +77,10 @@ public final class SkriptDB extends JavaPlugin {
         out.write("# How many connections can be awaited for simultaneously, may be useful to increase if SQL database is hosted on a separate machine to account for ping.\n");
         out.write("# If it is hosted within the same machine, set it to the count of cores your processor has or the count of threads your processor can process at once.\n");
         out.write("thread-pool-size: " + (Runtime.getRuntime().availableProcessors() + 2) + "\n");
-        out.write("How long SQL connections should be kept alive in HikariCP. Default: 1800000 (30 minutes)");
+        out.write("# How long SQL connections should be kept alive in HikariCP. Default: 1800000 (30 minutes)");
         out.write("max-connection-lifetime: 1800000");
-        out.write("# Only change this if you wish to use a different driver than Java's default, like MariaDB driver.\n");
-        out.write("# If you use MariaDB, its driver is shaded together with skript-db, so you can just specify:" + "\"org.mariadb.jdbc.Driver\"" + ".\n");
+        out.write("# Only change this if you wish to use a different driver than Java's default, like MariaDB/PostgreSQL driver.\n");
+        out.write("# If you use MariaDB or PostgreSQL, its driver is shaded together with skript-db, so you can just specify:" + "\"org.mariadb.jdbc.Driver\"" + " or " + "\"org.postgresql.Driver\"" + ".\n");
         out.write("sql-driver-class-name: " + "\"default\"" + "\n");
       } catch (IOException e) {
         e.printStackTrace();
