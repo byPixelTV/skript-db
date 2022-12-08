@@ -60,7 +60,8 @@ public class EffExecuteStatement extends Effect {
     private VariableString var;
     private boolean isLocal;
     private boolean isList;
-    private boolean isSync;
+    private boolean quickly;
+    private boolean isSync = false;
 
     private void continueScriptExecution(Event e, Object populatedVariables) {
         lastError = null;
@@ -82,19 +83,10 @@ public class EffExecuteStatement extends Effect {
         String baseVariable = var != null ? var.toString(e).toLowerCase(Locale.ENGLISH) : null;
         //if data source isn't set
         if (ds == null) return;
-
-        //if current thread is not main thread, then make this query to not have delays
-        boolean sync = !Bukkit.isPrimaryThread();
-        if (sync) {
-            isSync = true;
-        } else if (isSync) {
-            sync = true;
-        }
-
         Object locals = Variables.removeLocals(e);
 
         //execute SQL statement
-        if (!sync) {
+        if (Bukkit.isPrimaryThread()) {
             CompletableFuture<Object> sql = CompletableFuture.supplyAsync(() -> executeStatement(ds, baseVariable, query), threadPool);
             sql.whenComplete((res, err) -> {
                 if (err != null) {
@@ -105,12 +97,12 @@ public class EffExecuteStatement extends Effect {
                 if (res instanceof String) {
                     lastError = (String) res;
                 }
-                if (getNext() != null) {
-                    //if local variables are present
-                    //bring back local variables
-                    //populate SQL data into variables
+                //if local variables are present
+                //bring back local variables
+                //populate SQL data into variables
+                if (!quickly) {
                     Bukkit.getScheduler().runTask(SkriptDB.getInstance(), () -> {
-                        if (locals != null) {
+                        if (locals != null && getNext() != null) {
                             Variables.setLocalVariables(e, locals);
                         }
                         if (!(res instanceof String)) {
@@ -120,36 +112,45 @@ public class EffExecuteStatement extends Effect {
                         //the line below is required to prevent memory leaks
                         Variables.removeLocals(e);
                     });
+                } else {
+                    if (locals != null && getNext() != null) {
+                        Variables.setLocalVariables(e, locals);
+                    }
+                    if (!(res instanceof String)) {
+                        ((Map<String, Object>) res).forEach((name, value) -> setVariable(e, name, value));
+                    }
+                    TriggerItem.walk(getNext(), e);
+                    //the line below is required to prevent memory leaks
+                    Variables.removeLocals(e);
                 }
             });
-        // sync executed SQL query, same as above, just sync
+            // sync executed SQL query, same as above, just sync
         } else {
+            isSync = true;
             Object resources = executeStatement(ds, baseVariable, query);
             //handle last error syntax data
             lastError = null;
             if (resources instanceof String) {
                 lastError = (String) resources;
             }
-            if (getNext() != null) {
-                //if local variables are present
-                //bring back local variables
-                //populate SQL data into variables
-                if (locals != null) {
-                    Variables.setLocalVariables(e, locals);
-                }
-                if (!(resources instanceof String)) {
-                    ((Map<String, Object>) resources).forEach((name, value) -> setVariable(e, name, value));
-                }
-                TriggerItem.walk(getNext(), e);
-                Variables.removeLocals(e);
+            //if local variables are present
+            //bring back local variables
+            //populate SQL data into variables
+            if (locals != null && getNext() != null) {
+                Variables.setLocalVariables(e, locals);
             }
+            if (!(resources instanceof String)) {
+                ((Map<String, Object>) resources).forEach((name, value) -> setVariable(e, name, value));
+            }
+            TriggerItem.walk(getNext(), e);
+            Variables.removeLocals(e);
         }
     }
 
     @Override
     protected TriggerItem walk(Event e) {
         debug(e, true);
-        if (!isSync) {
+        if (!quickly || !isSync) {
             Delay.addDelayedEvent(e);
         }
         execute(e);
@@ -335,7 +336,7 @@ public class EffExecuteStatement extends Effect {
         }
         dataSource = (Expression<HikariDataSource>) exprs[1];
         Expression<?> expr = exprs[2];
-        isSync = matchedPattern == 1;
+        quickly = matchedPattern == 1;
         if (expr instanceof Variable) {
             Variable<?> varExpr = (Variable<?>) expr;
             var = varExpr.getName();
