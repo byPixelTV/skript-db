@@ -56,6 +56,8 @@ public class ExprDataSource extends SimpleExpression<HikariDataSource> {
 
         HikariDataSource ds = new HikariDataSource();
         ds.setMaximumPoolSize(SkriptDB.getInstance().getConfig().getInt("thread-pool-size", 10));
+        // 30 minutes by default
+        ds.setMaxLifetime(SkriptDB.getInstance().getConfig().getInt("max-connection-lifetime", 1800000));
         //allow specifying of own sql driver class name
         if (!SkriptDB.getInstance().getConfig().getString("sql-driver-class-name", "default").equals("default")) {
             ds.setDriverClassName(SkriptDB.getInstance().getConfig().getString("sql-driver-class-name"));
