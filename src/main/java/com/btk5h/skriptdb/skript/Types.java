@@ -30,10 +30,6 @@ public class Types {
                         return o.getJdbcUrl();
                     }
 
-                    @Override
-                    public String getVariableNamePattern() {
-                        return "jdbc:.+";
-                    }
                 })
                 .serializer(new Serializer<HikariDataSource>() {
                     @Override

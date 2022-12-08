@@ -83,25 +83,19 @@ public class EffExecuteStatement extends Effect {
         //if data source isn't set
         if (ds == null) return;
 
-        boolean sync = !Bukkit.isPrimaryThread();
-
         //if current thread is not main thread, then make this query to not have delays
+        boolean sync = !Bukkit.isPrimaryThread();
+        if (sync) {
+            isSync = true;
+        } else if (isSync) {
+            sync = true;
+        }
 
         Object locals = Variables.removeLocals(e);
 
         //execute SQL statement
-
-        CompletableFuture<Object> sql = null;
-        Object resources = null;
         if (!sync) {
-            sql = CompletableFuture.supplyAsync(() -> executeStatement(ds, baseVariable, query), threadPool);
-        } else {
-            resources = executeStatement(ds, baseVariable, query);
-        }
-
-        //when SQL statement is completed
-        boolean finalSync = sync;
-        if (sql != null) {
+            CompletableFuture<Object> sql = CompletableFuture.supplyAsync(() -> executeStatement(ds, baseVariable, query), threadPool);
             sql.whenComplete((res, err) -> {
                 if (err != null) {
                     err.printStackTrace();
@@ -115,7 +109,7 @@ public class EffExecuteStatement extends Effect {
                     //if local variables are present
                     //bring back local variables
                     //populate SQL data into variables
-                    if (isSync || finalSync) {
+                    Bukkit.getScheduler().runTask(SkriptDB.getInstance(), () -> {
                         if (locals != null) {
                             Variables.setLocalVariables(e, locals);
                         }
@@ -123,26 +117,14 @@ public class EffExecuteStatement extends Effect {
                             ((Map<String, Object>) res).forEach((name, value) -> setVariable(e, name, value));
                         }
                         TriggerItem.walk(getNext(), e);
+                        //the line below is required to prevent memory leaks
                         Variables.removeLocals(e);
-                    } else {
-                        Bukkit.getScheduler().runTask(SkriptDB.getInstance(), () -> {
-                            if (locals != null) {
-                                Variables.setLocalVariables(e, locals);
-                            }
-                            if (!(res instanceof String)) {
-                                ((Map<String, Object>) res).forEach((name, value) -> setVariable(e, name, value));
-                            }
-                            TriggerItem.walk(getNext(), e);
-                            //the line below is required to prevent memory leaks
-                            //no functionality difference notice with it being removed from my test, but the memory gets filled with leaks
-                            //so it must be kept
-                            Variables.removeLocals(e);
-                        });
-                    }
+                    });
                 }
             });
         // sync executed SQL query, same as above, just sync
         } else {
+            Object resources = executeStatement(ds, baseVariable, query);
             //handle last error syntax data
             lastError = null;
             if (resources instanceof String) {
@@ -167,7 +149,6 @@ public class EffExecuteStatement extends Effect {
     @Override
     protected TriggerItem walk(Event e) {
         debug(e, true);
-        //I think no longer needed as of 1.3.0, uncomment if something breaks
         if (!isSync) {
             Delay.addDelayedEvent(e);
         }

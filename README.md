@@ -84,6 +84,18 @@ execute "select %unsafe {columns variable}% from %{table variable}%" in {sql}
 execute unsafe {fully dynamic query} in {sql}
 ```
 
+#### FAQ: How to return sql data in a function?
+You can't because functions don't allow delays, but you can use skript-reflect sections for this:
+```
+on load:
+	create new section stored in {-section::getPlayersFromDatabase}:
+		execute "SELECT uuid FROM table" in {-sql} and store the result in {_result::*}
+		return {_result::uuid::*}
+command /showplayers [<text>]:
+	trigger:
+		run section {-section::getPlayersFromDatabase} async and store result in {_uuids::*} and wait
+		send "%{_uuids::*}%"
+```
 ---
 ### Configuration
 plugins/skript-db/config.yml
