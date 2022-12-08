@@ -11,6 +11,7 @@
 - SQL Driver is configurable, comes with shaded MariaDB and PostgreSQL drivers
 - A few variable type related bugs fixed
 - Uses Java 11 instead of Java 8
+- Configurable max-connection-lifetime
 
 ### Installation
 1. Use 1.8+ Minecraft server version.
