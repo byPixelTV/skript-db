@@ -90,49 +90,32 @@ public class EffExecuteStatement extends Effect {
         Object locals = Variables.removeLocals(e);
 
         //execute SQL statement
-        CompletableFuture<Object> sql =
-                CompletableFuture.supplyAsync(() -> executeStatement(ds, baseVariable, query), threadPool);
+
+        CompletableFuture<Object> sql = null;
+        Object resources = null;
+        if (!sync) {
+            sql = CompletableFuture.supplyAsync(() -> executeStatement(ds, baseVariable, query), threadPool);
+        } else {
+            resources = executeStatement(ds, baseVariable, query);
+        }
 
         //when SQL statement is completed
         boolean finalSync = sync;
-        sql.whenComplete((res, err) -> {
-            if (err != null) {
-                err.printStackTrace();
-            }
-
-            //handle last error syntax data
-            lastError = null;
-            if (res instanceof String) {
-                lastError = (String) res;
-            }
-
-            if (getNext() != null) {
-                //if local variables are present
-                //bring back local variables
-
-                //populate SQL data into variables
-                if (!(res instanceof String)) {
-
-                    //also set variables in the sql query complete event
-
-                    //TEMPORARILY DISABLED, AS THIS WOULD WORSEN PERFORMANCE OF THE QUERIES AND NOT BE USED BY MOST PEOPLE.
-                    //I may add config option to enable this later?
-
-                    //SQLQueryCompleteEvent event = new SQLQueryCompleteEvent(this.query.getSingle(e));
-                    //((Map<String, Object>) res).forEach((name, value) -> setVariable(event, name, value));
-                    //SkriptDB.getPlugin(SkriptDB.class).getServer().getPluginManager().callEvent(event);
+        if (sql != null) {
+            sql.whenComplete((res, err) -> {
+                if (err != null) {
+                    err.printStackTrace();
                 }
-                if (isSync || finalSync) {
-                    if (locals != null) {
-                        Variables.setLocalVariables(e, locals);
-                    }
-                    if (!(res instanceof String)) {
-                        ((Map<String, Object>) res).forEach((name, value) -> setVariable(e, name, value));
-                    }
-                    TriggerItem.walk(getNext(), e);
-                    Variables.removeLocals(e);
-                } else {
-                    Bukkit.getScheduler().runTask(SkriptDB.getInstance(), () -> {
+                //handle last error syntax data
+                lastError = null;
+                if (res instanceof String) {
+                    lastError = (String) res;
+                }
+                if (getNext() != null) {
+                    //if local variables are present
+                    //bring back local variables
+                    //populate SQL data into variables
+                    if (isSync || finalSync) {
                         if (locals != null) {
                             Variables.setLocalVariables(e, locals);
                         }
@@ -140,14 +123,45 @@ public class EffExecuteStatement extends Effect {
                             ((Map<String, Object>) res).forEach((name, value) -> setVariable(e, name, value));
                         }
                         TriggerItem.walk(getNext(), e);
-                        //the line below is required to prevent memory leaks
-                        //no functionality difference notice with it being removed from my test, but the memory gets filled with leaks
-                        //so it must be kept
                         Variables.removeLocals(e);
-                    });
+                    } else {
+                        Bukkit.getScheduler().runTask(SkriptDB.getInstance(), () -> {
+                            if (locals != null) {
+                                Variables.setLocalVariables(e, locals);
+                            }
+                            if (!(res instanceof String)) {
+                                ((Map<String, Object>) res).forEach((name, value) -> setVariable(e, name, value));
+                            }
+                            TriggerItem.walk(getNext(), e);
+                            //the line below is required to prevent memory leaks
+                            //no functionality difference notice with it being removed from my test, but the memory gets filled with leaks
+                            //so it must be kept
+                            Variables.removeLocals(e);
+                        });
+                    }
                 }
+            });
+        // sync executed SQL query, same as above, just sync
+        } else {
+            //handle last error syntax data
+            lastError = null;
+            if (resources instanceof String) {
+                lastError = (String) resources;
             }
-        });
+            if (getNext() != null) {
+                //if local variables are present
+                //bring back local variables
+                //populate SQL data into variables
+                if (locals != null) {
+                    Variables.setLocalVariables(e, locals);
+                }
+                if (!(resources instanceof String)) {
+                    ((Map<String, Object>) resources).forEach((name, value) -> setVariable(e, name, value));
+                }
+                TriggerItem.walk(getNext(), e);
+                Variables.removeLocals(e);
+            }
+        }
     }
 
     @Override
