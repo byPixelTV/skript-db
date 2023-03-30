@@ -22,7 +22,7 @@ import java.util.Map;
  *
  * @name Data Source
  * @index -1
- * @pattern [the] data(base|[ ]source) [(of|at)] %string% [with [a] [max[imum]] [connection] life[ ]time of %timespan%]"
+ * @pattern [the] data(base|[ ]source) [(of|at)] %string% [with [a] [max[imum]] [connection] life[ ]time of %timespan%] [[(using|with)] [a] driver %-string%]"
  * @return datasource
  * @example set {sql} to the database "mysql://localhost:3306/mydatabase?user=admin&password=12345&useSSL=false"
  * @since 0.1.0
@@ -33,11 +33,12 @@ public class ExprDataSource extends SimpleExpression<HikariDataSource> {
     static {
         Skript.registerExpression(ExprDataSource.class, HikariDataSource.class,
                 ExpressionType.COMBINED, "[the] data(base|[ ]source) [(of|at)] %string% " +
-                        "[with [a] [max[imum]] [connection] life[ ]time of %-timespan%]");
+                        "[with [a] [max[imum]] [connection] life[ ]time of %-timespan%] " + "[[(using|with)] [a] driver %-string%]");
     }
 
     private Expression<String> url;
     private Expression<Timespan> maxLifetime;
+    private Expression<String> driver;
 
     @Override
     protected HikariDataSource[] get(Event e) {
@@ -56,12 +57,17 @@ public class ExprDataSource extends SimpleExpression<HikariDataSource> {
 
         HikariDataSource ds = new HikariDataSource();
         ds.setMaximumPoolSize(SkriptDB.getInstance().getConfig().getInt("thread-pool-size", 10));
+
         // 30 minutes by default
         ds.setMaxLifetime(SkriptDB.getInstance().getConfig().getInt("max-connection-lifetime", 1800000));
-        //allow specifying of own sql driver class name
-        if (!SkriptDB.getInstance().getConfig().getString("sql-driver-class-name", "default").equals("default")) {
+
+        // Allow specifying of own sql driver class name
+        if (driver != null && driver.getSingle(e) != null) {
+            ds.setDriverClassName(driver.getSingle(e));
+        } else if (!SkriptDB.getInstance().getConfig().getString("sql-driver-class-name", "default").equals("default")) {
             ds.setDriverClassName(SkriptDB.getInstance().getConfig().getString("sql-driver-class-name"));
         }
+
         ds.setJdbcUrl(jdbcUrl);
 
         if (maxLifetime != null) {
@@ -98,6 +104,7 @@ public class ExprDataSource extends SimpleExpression<HikariDataSource> {
                         SkriptParser.ParseResult parseResult) {
         url = (Expression<String>) exprs[0];
         maxLifetime = (Expression<Timespan>) exprs[1];
+        driver = (Expression<String>) exprs[2];
         return true;
     }
 }
