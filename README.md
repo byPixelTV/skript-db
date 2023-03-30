@@ -8,10 +8,10 @@
 - Uses newer versions of dependencies (Increased performance and security)
 - Replaced `synchronously execute` with `quickly execute`, which allows to speed up queries by 50ms with some risk
 - If a sql query is detected to be running on non-main thread, it becomes synchronous automatically
-- SQL Driver is configurable, comes with shaded MariaDB and PostgreSQL drivers
+- SQL Driver is configurable both in config and in database connection, comes with shaded MariaDB and PostgreSQL drivers
 - A few variable type related bugs fixed
 - Uses Java 11 instead of Java 8
-- Configurable max-connection-lifetime
+
 
 ### Installation
 1. Use 1.8+ Minecraft server version.
@@ -26,7 +26,7 @@ Stores the connection information for a data source. This should be saved to a v
  MariaDB/PostgreSQL users: make sure to check `config.yml` to use the correct driver.
 #### Syntax
 ```
-[the] data(base|[ ]source) [(of|at)] %string%
+[the] data(base|[ ]source) [(of|at)] %string% [with [a] [max[imum]] [connection] life[ ]time of %timespan%] [[(using|with)] [a] driver %-string%]
 ```
 
 #### Examples
@@ -35,6 +35,10 @@ set {sql} to the database "mysql://localhost:3306/mydatabase?user=admin&password
 set {sql} to the database "mariadb://localhost:3306/mydatabase?user=admin&password=12345&useSSL=false"
 set {sql} to the database "postgresql://localhost:3306/mydatabase?user=admin&password=12345&ssl=false"
 set {sql} to the database "sqlite:database.db"
+
+# Extra parameters:
+set {sql} to the database "postgresql://localhost:3306/mydatabase?user=admin&password=12345&ssl=false" with a maximum connection lifetime of 30 minutes
+set {sql} to the database "postgresql://localhost:3306/mydatabase?user=admin&password=12345&ssl=false" with a maximum connection lifetime of 30 minutes using driver "org.postgresql.Driver"
 ```
 
 ---
@@ -76,6 +80,7 @@ Stores the error from the last executed statement, if there was one.
 
 ### Expression `Unsafe Expression` => `text`
 Opts out of automatic SQL injection protection for a specific expression in a statement.
+Note: If using PostgreSQL, this will always be needed, due to skript-db not supporting SQL injection protection for PostgreSQL currently.
 #### Syntax
 ```
 unsafe %text%
