@@ -2,60 +2,47 @@ package com.btk5h.skriptdb;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.ExpressionInfo;
 import ch.njol.skript.lang.VariableString;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.Objects;
 
 public class SkriptUtil {
 
-  private static final Field STRING;
-  private static final Field EXPR;
+  private static final Field STRINGS;
 
   static {
-    Field _FIELD = null;
+    Field tempField = null;
     try {
-      _FIELD = VariableString.class.getDeclaredField("string");
-      _FIELD.setAccessible(true);
+      // Check for the correct field name in VariableString class
+      tempField = VariableString.class.getDeclaredField("strings");
+      tempField.setAccessible(true);
     } catch (NoSuchFieldException e) {
-      Skript.error("Skript's 'string' field could not be resolved.");
+      Skript.error("Skript's 'strings' field could not be resolved.");
       e.printStackTrace();
     }
-    STRING = _FIELD;
-
-    try {
-      Optional<Class<?>> expressionInfo = Arrays.stream(VariableString.class.getDeclaredClasses())
-          .filter(cls -> cls.getSimpleName().equals("ExpressionInfo"))
-          .findFirst();
-      if (expressionInfo.isPresent()) {
-        Class<?> expressionInfoClass = expressionInfo.get();
-        _FIELD = expressionInfoClass.getDeclaredField("expr");
-        _FIELD.setAccessible(true);
-      } else {
-        Skript.error("Skript's 'ExpressionInfo' class could not be resolved.");
-      }
-    } catch (NoSuchFieldException e) {
-      e.printStackTrace();
-      Skript.error("Skript's 'expr' field could not be resolved.");
-    }
-    EXPR = _FIELD;
+    STRINGS = tempField;
   }
 
   public static Object[] getTemplateString(VariableString vs) {
+    if (STRINGS == null) {
+      throw new IllegalStateException("The 'strings' field is not accessible.");
+    }
     try {
-      return (Object[]) STRING.get(vs);
+      return (Object[]) STRINGS.get(vs);
     } catch (IllegalAccessException e) {
       throw new RuntimeException(e);
     }
   }
 
-  public static Expression<?> getExpressionFromInfo(Object o) {
+  public static Expression<?> getExpressionFromInfo(ExpressionInfo<?, ?> expressionInfo) {
     try {
-      return (Expression<?>) EXPR.get(o);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
+      Constructor<?> constructor = Objects.requireNonNull(expressionInfo.getExpressionType()).getClass().getDeclaredConstructor();
+      return (Expression<?>) constructor.newInstance();
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to create an instance of Expression", e);
     }
   }
-
 }

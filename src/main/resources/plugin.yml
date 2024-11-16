@@ -1,6 +1,0 @@
-name: skript-db
-version: 1.4.0
-main: com.btk5h.skriptdb.SkriptDB
-depend: [Skript]
-authors: [btk5h, FranKusmiruk, Govindas, TPGamesNL]
-api-version: 1.13

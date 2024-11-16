@@ -51,7 +51,7 @@ public final class SkriptDB extends JavaPlugin {
   private static SkriptAddon addonInstance;
 
   private static RowSetFactory rowSetFactory;
-  protected FileConfiguration config;
+  private FileConfiguration config;
 
   public SkriptDB() {
     if (instance == null) {
