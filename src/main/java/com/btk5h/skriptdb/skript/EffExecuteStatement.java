@@ -8,6 +8,7 @@ import ch.njol.util.Kleenean;
 import ch.njol.util.Pair;
 import com.btk5h.skriptdb.SkriptDB;
 import com.btk5h.skriptdb.SkriptUtil;
+import com.tcoded.folialib.FoliaLib;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -25,6 +26,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 /**
  * Executes a statement on a database and optionally stores the result in a variable. Expressions
@@ -100,7 +102,7 @@ public class EffExecuteStatement extends Effect {
                 //bring back local variables
                 //populate SQL data into variables
                 if (!quickly) {
-                    Bukkit.getScheduler().runTask(SkriptDB.getInstance(), () -> {
+                    new FoliaLib(SkriptDB.getInstance()).getScheduler().runNextTick(Consumer -> {
                         if (locals != null && getNext() != null) {
                             Variables.setLocalVariables(e, locals);
                         }
@@ -108,7 +110,7 @@ public class EffExecuteStatement extends Effect {
                             ((Map<String, Object>) res).forEach((name, value) -> setVariable(e, name, value));
                         }
                         TriggerItem.walk(getNext(), e);
-                        //the line below is required to prevent memory leaks
+                        // the line below is required to prevent memory leaks
                         Variables.removeLocals(e);
                     });
                 } else {

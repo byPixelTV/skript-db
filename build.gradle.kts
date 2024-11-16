@@ -1,6 +1,7 @@
 plugins {
     java
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
+    id("com.gradleup.shadow") version "8.3.5"
 }
 
 val versionString = "1.5.0"
@@ -28,6 +29,7 @@ dependencies {
     bukkitLibrary("org.postgresql:postgresql:42.7.4")
     bukkitLibrary("com.zaxxer:HikariCP:6.1.0")
     compileOnly("org.jetbrains:annotations:26.0.1")
+    implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
 }
 
 sourceSets {
@@ -49,17 +51,22 @@ tasks {
         archiveVersion.set(version.toString())
         archiveClassifier.set("")
     }
+
+    shadowJar {
+        relocate("com.tcoded.folialib", "com.btk5h.skriptdb.lib.folialib")
+    }
 }
 
 bukkit {
     main = "com.btk5h.skriptdb.SkriptDB"
     version = versionString
-    foliaSupported = false
+    foliaSupported = true
     apiVersion = "1.13"
     authors = listOf("btk5h", "FranKusmiruk", "Govindas", "TPGamesNL", "byPixelTV")
     description = "A Skript addon that allows you to interact with SQL databases."
     depend = listOf("Skript")
     prefix = "SkriptDB"
+    foliaSupported = true
 }
 
 java {

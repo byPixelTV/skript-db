@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+> # 📢 ABOUT THE ADDON 🍇:
+> - This is not my addon, it is just a fork from https://git.limework.net/Limework/skript-db, the original contributors are btk5h, FranKusmiruk, Govindas and TPGamesNL. I just updated this project, to work with the newest Skript version.
+
 # skript-db
 
  > Sensible SQL support for Skript.
