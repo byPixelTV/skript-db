@@ -7,20 +7,20 @@
  > Sensible SQL support for Skript.
 ---
 
-### Difference from original skript-db
+### Difference from original skript-db (by btk5h, FranKusmiruk, Govindas and TPGamesNL)
 - Fixed local variables disappearance in newer Skript versions (very hacky fix, but it works, so that's good!)
 - Uses newer versions of dependencies (Increased performance and security)
 - Replaced `synchronously execute` with `quickly execute`, which allows to speed up queries by 50ms with some risk
 - If a sql query is detected to be running on non-main thread, it becomes synchronous automatically
 - SQL Driver is configurable both in config and in database connection, comes with shaded MariaDB and PostgreSQL drivers
 - A few variable type related bugs fixed
-- Uses Java 11 instead of Java 8
+- Uses Java 21 instead of Java 11
 
 
 ### Installation
-1. Use 1.8+ Minecraft server version.
-2. Use Skript 2.5+ (1.8 Skript fork is needed if you're using 1.8)
-3. Use Java 11+ (If you use 1.8, a spigot fork is needed to support Java 11+)
+1. Use 1.21+ Minecraft server version.
+2. Use Skript 2.9+
+3. Use Java 21+
 4. Put skript-db in plugins folder and restart the server
 ### Expression `Data Source` => `datasource`
 Stores the connection information for a data source. This should be saved to a variable in a
