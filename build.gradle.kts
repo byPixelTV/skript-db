@@ -26,7 +26,7 @@ dependencies {
     compileOnly("com.github.SkriptLang:Skript:2.9.4")
     bukkitLibrary("org.mariadb.jdbc:mariadb-java-client:3.5.0")
     bukkitLibrary("org.postgresql:postgresql:42.7.4")
-    bukkitLibrary("com.zaxxer:HikariCP:6.1.0")
+    bukkitLibrary("com.zaxxer:HikariCP:6.2.0")
     compileOnly("org.jetbrains:annotations:26.0.1")
 }
 
