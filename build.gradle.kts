@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.21.3-R0.1-SNAPSHOT")
-    compileOnly("com.github.SkriptLang:Skript:2.9.5")
+    compileOnly("com.github.SkriptLang:Skript:2.10.0")
     bukkitLibrary("org.mariadb.jdbc:mariadb-java-client:3.5.1")
     bukkitLibrary("org.postgresql:postgresql:42.7.5")
     bukkitLibrary("com.zaxxer:HikariCP:6.2.1")
