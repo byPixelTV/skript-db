@@ -4,7 +4,7 @@ plugins {
     id("com.gradleup.shadow") version "8.3.5"
 }
 
-val versionString = "1.5.0"
+val versionString = "1.6.0"
 
 group = "com.btk5h"
 version = versionString
@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.21.3-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.github.SkriptLang:Skript:2.10.0")
     bukkitLibrary("org.mariadb.jdbc:mariadb-java-client:3.5.1")
     bukkitLibrary("org.postgresql:postgresql:42.7.5")
@@ -46,13 +46,11 @@ tasks {
         options.release.set(21)
     }
 
-    jar {
+    shadowJar {
         archiveBaseName.set("skript-db")
         archiveVersion.set(version.toString())
         archiveClassifier.set("")
-    }
 
-    shadowJar {
         relocate("com.tcoded.folialib", "com.btk5h.skriptdb.lib.folialib")
     }
 }

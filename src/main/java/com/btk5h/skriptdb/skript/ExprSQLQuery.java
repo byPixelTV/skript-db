@@ -5,6 +5,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.parser.ParserInstance;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.log.ErrorQuality;
 import ch.njol.util.Kleenean;
@@ -24,7 +25,6 @@ public class ExprSQLQuery extends SimpleExpression<String> {
         Skript.registerExpression(ExprSQLQuery.class, String.class,
                 ExpressionType.SIMPLE, "sql query");
     }
-
 
     @Override
     protected String[] get(Event e) {
@@ -51,7 +51,7 @@ public class ExprSQLQuery extends SimpleExpression<String> {
 
     @Override
     public boolean init(final Expression<?>[] expressions, final int matchedPattern, final Kleenean isDelayed, final SkriptParser.ParseResult parseResult) {
-        if (!ScriptLoader.isCurrentEvent(SQLQueryCompleteEvent.class)) {
+        if (!ParserInstance.get().isCurrentEvent(SQLQueryCompleteEvent.class)) {
             Skript.error("Cannot use 'sql query' outside of a complete of sql query event", ErrorQuality.SEMANTIC_ERROR);
             return false;
         }

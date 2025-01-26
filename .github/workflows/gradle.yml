@@ -28,10 +28,10 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew shadowJar
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SkRedis-Dev-Build [CLICK TO DOWNLOAD]
+          name: skript-db-Dev-Build [CLICK TO DOWNLOAD]
           path: build/libs/skript-db-*.jar

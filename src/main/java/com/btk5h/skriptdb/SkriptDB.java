@@ -40,7 +40,7 @@ import ch.njol.skript.SkriptAddon;
 
 /**
  * # skript-db
- *
+ * <p>
  * > Sensible SQL support for Skript.
  *
  * @index -1

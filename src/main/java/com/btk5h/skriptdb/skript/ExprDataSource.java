@@ -23,7 +23,6 @@ import java.util.Map;
  * @name Data Source
  * @index -1
  * @pattern [the] data(base|[ ]source) [(of|at)] %string% [with [a] [max[imum]] [connection] life[ ]time of %timespan%] [[(using|with)] [a] driver %-string%]"
- * @return datasource
  * @example set {sql} to the database "mysql://localhost:3306/mydatabase?user=admin&password=12345&useSSL=false"
  * @since 0.1.0
  */
@@ -74,7 +73,7 @@ public class ExprDataSource extends SimpleExpression<HikariDataSource> {
             Timespan l = maxLifetime.getSingle(e);
 
             if (l != null) {
-                ds.setMaxLifetime(l.getMilliSeconds());
+                ds.setMaxLifetime(l.getDuration().toMillis());
             }
         }
 

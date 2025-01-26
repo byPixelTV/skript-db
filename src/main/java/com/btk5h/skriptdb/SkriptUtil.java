@@ -4,6 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionInfo;
 import ch.njol.skript.lang.VariableString;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -37,7 +38,7 @@ public class SkriptUtil {
     }
   }
 
-  public static Expression<?> getExpressionFromInfo(ExpressionInfo<?, ?> expressionInfo) {
+  public static @NotNull Expression<?> getExpressionFromInfo(ExpressionInfo<?, ?> expressionInfo) {
     try {
       Constructor<?> constructor = Objects.requireNonNull(expressionInfo.getExpressionType()).getClass().getDeclaredConstructor();
       return (Expression<?>) constructor.newInstance();
