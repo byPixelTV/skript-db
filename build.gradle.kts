@@ -2,6 +2,7 @@ plugins {
     java
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     id("com.gradleup.shadow") version "8.3.5"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
 }
 
 val versionString = "1.6.0"
@@ -23,7 +24,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
+
     compileOnly("com.github.SkriptLang:Skript:2.10.0")
     bukkitLibrary("org.mariadb.jdbc:mariadb-java-client:3.5.1")
     bukkitLibrary("org.postgresql:postgresql:42.7.5")
@@ -54,6 +56,8 @@ tasks {
         relocate("com.tcoded.folialib", "com.btk5h.skriptdb.lib.folialib")
     }
 }
+
+paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
 bukkit {
     main = "com.btk5h.skriptdb.SkriptDB"
