@@ -2,7 +2,7 @@ plugins {
     java
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     id("com.gradleup.shadow") version "8.3.5"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
+    id("io.papermc.paperweight.userdev") version "2.0.0-SNAPSHOT"
 }
 
 val versionString = "1.6.0"
@@ -26,7 +26,7 @@ repositories {
 dependencies {
     paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
 
-    compileOnly("com.github.SkriptLang:Skript:2.10.0")
+    compileOnly("com.github.SkriptLang:Skript:2.10.1")
     bukkitLibrary("org.mariadb.jdbc:mariadb-java-client:3.5.1")
     bukkitLibrary("org.postgresql:postgresql:42.7.5")
     bukkitLibrary("com.zaxxer:HikariCP:6.2.1")
