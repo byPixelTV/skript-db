@@ -18,8 +18,8 @@
 
 
 ### Installation
-1. Use 1.21+ Minecraft server version.
-2. Use Skript 2.9+
+1. Use a 1.21.4 PaperMC server.
+2. Use Skript 2.10+
 3. Use Java 21+
 4. Put skript-db in plugins folder and restart the server
 ### Expression `Data Source` => `datasource`
