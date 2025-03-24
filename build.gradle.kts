@@ -29,7 +29,7 @@ dependencies {
     compileOnly("com.github.SkriptLang:Skript:2.10.2")
     bukkitLibrary("org.mariadb.jdbc:mariadb-java-client:3.5.2")
     bukkitLibrary("org.postgresql:postgresql:42.7.5")
-    bukkitLibrary("com.zaxxer:HikariCP:6.2.1")
+    bukkitLibrary("com.zaxxer:HikariCP:6.3.0")
     compileOnly("org.jetbrains:annotations:26.0.2")
     implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
 }
