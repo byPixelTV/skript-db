@@ -26,7 +26,7 @@ repositories {
 dependencies {
     paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
 
-    compileOnly("com.github.SkriptLang:Skript:2.11.0-pre2")
+    compileOnly("com.github.SkriptLang:Skript:2.11.0")
     bukkitLibrary("org.mariadb.jdbc:mariadb-java-client:3.5.3")
     bukkitLibrary("org.postgresql:postgresql:42.7.5")
     bukkitLibrary("com.zaxxer:HikariCP:6.3.0")
